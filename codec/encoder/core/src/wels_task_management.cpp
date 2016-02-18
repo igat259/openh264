@@ -63,11 +63,9 @@ IWelsTaskManage*   IWelsTaskManage::CreateTaskManage (sWelsEncCtx* pCtx, const i
 
   IWelsTaskManage* pTaskManage;
   pTaskManage = WELS_NEW_OP (CWelsTaskManageBase(), CWelsTaskManageBase);
-  WELS_VERIFY_RETURN_IF (NULL, NULL == pTaskManage)
 
-  if ( ENC_RETURN_SUCCESS != pTaskManage->Init (pCtx) ) {
-    pTaskManage->Uninit();
-    WELS_DELETE_OP(pTaskManage);
+  if (pTaskManage) {
+    pTaskManage->Init (pCtx);
   }
   return pTaskManage;
 }
@@ -100,7 +98,7 @@ WelsErrorType CWelsTaskManageBase::Init (sWelsEncCtx* pEncCtx) {
                                WelsCommon::CWelsThreadPool);
   WELS_VERIFY_RETURN_IF (ENC_RETURN_MEMALLOCERR, NULL == m_pThreadPool)
 
-  int32_t iReturn = ENC_RETURN_SUCCESS;
+  int32_t iReturn = 0;
   for (int32_t iDid = 0; iDid < MAX_DEPENDENCY_LAYER; iDid++) {
     m_pcAllTaskList[CWelsBaseTask::WELS_ENC_TASK_ENCODING][iDid] = m_cEncodingTaskList[iDid];
     m_pcAllTaskList[CWelsBaseTask::WELS_ENC_TASK_UPDATEMBMAP][iDid] = m_cPreEncodingTaskList[iDid];
@@ -116,8 +114,8 @@ void   CWelsTaskManageBase::Uninit() {
   WELS_DELETE_OP (m_pThreadPool);
 
   for (int32_t iDid = 0; iDid < MAX_DEPENDENCY_LAYER; iDid++) {
-    WELS_DELETE_OP(m_cEncodingTaskList[iDid]);
-    WELS_DELETE_OP(m_cPreEncodingTaskList[iDid]);
+    delete m_cEncodingTaskList[iDid];
+    delete m_cPreEncodingTaskList[iDid];
   }
   WelsEventClose (&m_hTaskEvent);
 }

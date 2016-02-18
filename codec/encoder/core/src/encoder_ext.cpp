@@ -2290,7 +2290,8 @@ void FreeMemorySvc (sWelsEncCtx** ppCtx) {
     if ((*ppCtx)->pMemAlign != NULL) {
       WelsLog (& (*ppCtx)->sLogCtx, WELS_LOG_INFO, "FreeMemorySvc(), verify memory usage (%d bytes) after free..",
                (*ppCtx)->pMemAlign->WelsGetMemoryUsage());
-      WELS_DELETE_OP((*ppCtx)->pMemAlign);
+      delete (*ppCtx)->pMemAlign;
+      (*ppCtx)->pMemAlign = NULL;
     }
 
     free (*ppCtx);
@@ -2478,7 +2479,8 @@ void WelsUninitEncoderExt (sWelsEncCtx** ppCtx) {
 
   if ((*ppCtx)->pVpp) {
     (*ppCtx)->pVpp->FreeSpatialPictures (*ppCtx);
-    WELS_DELETE_OP((*ppCtx)->pVpp);
+    delete (*ppCtx)->pVpp;
+    (*ppCtx)->pVpp = NULL;
   }
   FreeMemorySvc (ppCtx);
   *ppCtx = NULL;

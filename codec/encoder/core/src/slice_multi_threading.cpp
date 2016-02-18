@@ -413,7 +413,8 @@ void ReleaseMtResource (sWelsEncCtx** ppCtx) {
   memset (&pSmt->bThreadBsBufferUsage, 0, MAX_THREADS_NUM * sizeof (bool));
 
   if ((*ppCtx)->pTaskManage != NULL) {
-    WELS_DELETE_OP((*ppCtx)->pTaskManage);
+    delete (*ppCtx)->pTaskManage;
+    (*ppCtx)->pTaskManage = NULL;
   }
 
 #ifdef MT_DEBUG
